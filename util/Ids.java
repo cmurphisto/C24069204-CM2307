@@ -1,9 +1,9 @@
-package studentrentals.util; 
+package studentrentals.util;
 
-import java.util.UUID; 
+import java.util.UUID;
 
-public class Ids {
-    private Ids() {}   //Prevent instantiation
+public final class Ids {
+    private Ids() {}
     public static String newId() {
         return UUID.randomUUID().toString();
     }
