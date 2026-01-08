@@ -7,21 +7,36 @@ import studentrentals.service.*;
 
 public class Main {
     public static void main(String[] args) {
+
         UserRepository userRepo = new UserRepository();
         PropertyRepository propertyRepo = new PropertyRepository();
         RoomRepository roomRepo = new RoomRepository();
         BookingRepository bookingRepo = new BookingRepository();
+
         RoomSearchIndex index = new RoomSearchIndex();
 
-        AuthService auth = new AuthService(userRepo, new PasswordHasher());
+        PasswordHasher hasher = new PasswordHasher();
+        AuthService authService = new AuthService(userRepo, hasher);
         BookingService bookingService = new BookingService(bookingRepo, roomRepo, propertyRepo);
         PropertyService propertyService = new PropertyService(propertyRepo, roomRepo, index);
-        SearchService searchService = new SearchService(propertyRepo, roomRepo,
-                new IndexedSearchStrategy(index, bookingService));
+
+        SearchStrategy strategy = new IndexedSearchStrategy(index, bookingService);
+        SearchService searchService = new SearchService(propertyRepo, roomRepo, strategy);
+
         ReviewService reviewService = new ReviewService(bookingRepo, propertyRepo);
 
-        auth.bootstrapAdminIfMissing("Admin", "admin@test.com", "admin");
+        authService.bootstrapAdminIfMissing(
+                "Admin",
+                "admin@studentrentals.local",
+                "admin"
+        );
 
-        new ConsoleUI(auth, propertyService, searchService, bookingService, reviewService).run();
+        new ConsoleUI(
+                authService,
+                propertyService,
+                searchService,
+                bookingService,
+                reviewService
+        ).run();
     }
 }
