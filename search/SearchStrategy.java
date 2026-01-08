@@ -1,5 +1,10 @@
-package studentrentals.search; 
+package studentrentals.search;
+
+import studentrentals.model.property.Room;
+
+import java.util.List;
 
 public interface SearchStrategy {
-    void search(SearchQuery query);
+    List<Room> search(SearchQuery q);
+    String name();
 }
