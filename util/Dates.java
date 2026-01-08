@@ -1,9 +1,10 @@
 package studentrentals.util; 
 
-import java.time.*; 
+import java.util.UUID; 
 
-public class Dates {
-    public static LocalDate parse(String s) {
-        return LocalDate.parse(s);
+public class Ids {
+    private Ids() {}   //Prevent instantiation
+    public static String newId() {
+        return UUID.randomUUID().toString();
     }
 }
