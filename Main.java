@@ -5,9 +5,8 @@ import studentrentals.repo.*;
 import studentrentals.search.*;
 import studentrentals.service.*;
 
-public class Main {
+public final class Main {
     public static void main(String[] args) {
-
         UserRepository userRepo = new UserRepository();
         PropertyRepository propertyRepo = new PropertyRepository();
         RoomRepository roomRepo = new RoomRepository();
@@ -16,27 +15,18 @@ public class Main {
         RoomSearchIndex index = new RoomSearchIndex();
 
         PasswordHasher hasher = new PasswordHasher();
-        AuthService authService = new AuthService(userRepo, hasher);
+        AuthService auth = new AuthService(userRepo, hasher);
         BookingService bookingService = new BookingService(bookingRepo, roomRepo, propertyRepo);
         PropertyService propertyService = new PropertyService(propertyRepo, roomRepo, index);
 
-        SearchStrategy strategy = new IndexedSearchStrategy(index, bookingService);
-        SearchService searchService = new SearchService(propertyRepo, roomRepo, strategy);
+        SearchStrategy indexed = new IndexedSearchStrategy(index, bookingService);
+        SearchService searchService = new SearchService(propertyRepo, roomRepo, indexed);
 
         ReviewService reviewService = new ReviewService(bookingRepo, propertyRepo);
 
-        authService.bootstrapAdminIfMissing(
-                "Admin",
-                "admin@studentrentals.local",
-                "admin"
-        );
+        auth.bootstrapAdminIfMissing("Admin", "admin@studentrentals.local", "adminpass");
 
-        new ConsoleUI(
-                authService,
-                propertyService,
-                searchService,
-                bookingService,
-                reviewService
-        ).run();
+        ConsoleUI ui = new ConsoleUI(auth, propertyService, searchService, bookingService, reviewService);
+        ui.run();
     }
 }
