@@ -1,7 +1,5 @@
-package studentrentals.model.role; 
+package studentrentals.model.role;
 
 public enum Role {
-    STUDENT,
-    HOMEOWNER,
-    ADMIN
+    STUDENT, HOMEOWNER, ADMIN
 }
